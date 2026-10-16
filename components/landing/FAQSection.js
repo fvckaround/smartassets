@@ -25,10 +25,7 @@ const faqs = [
     q: "What happens when a plan ends?",
     a: "When the term ends the investment is settled and the payout is credited to your balance. The payout depends on the outcome and can be lower than the target.",
   },
-  {
-    q: "Is my capital at risk?",
-    a: "Yes. All investing carries risk. Only invest money you can afford to lose and read the full risk disclosure before you start.",
-  },
+ 
   {
     q: "Can I use Smart Assets where I live?",
     a: "Rules for investment services differ by country. Check that it is lawful for you to use this service where you live before you create an account.",

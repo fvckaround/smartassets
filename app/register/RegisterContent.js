@@ -142,8 +142,7 @@ export default function RegisterContent() {
               className="mt-1 h-4 w-4 accent-[#d4af37]"
             />
             <span>
-              I understand that investing in digital assets is risky, that I could lose all of my capital, and that
-              target returns are not guaranteed. I have read the{" "}
+              I understand that investing in digital assets is risky, that my money is handled and invested with this company. I have read the{" "}
               <Link href="/risk-disclosure" className="text-[var(--color-gold)] underline" target="_blank">
                 risk disclosure
               </Link>
