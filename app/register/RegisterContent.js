@@ -6,6 +6,7 @@ import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { FOUND_US_OPTIONS } from "@/lib/survey";
 
 export default function RegisterContent() {
   const [form, setForm] = useState({
@@ -15,6 +16,8 @@ export default function RegisterContent() {
     country: "",
     password: "",
     ref: "",
+    foundUs: "",
+    rating: 0,
     acceptedRisk: false,
   });
   const [error, setError] = useState("");
@@ -112,6 +115,42 @@ export default function RegisterContent() {
               maxLength={20}
               placeholder="e.g. K7M2QX9A"
             />
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">How did you find us? (optional)</label>
+            <select className="input" value={form.foundUs} onChange={set("foundUs")}>
+              <option value="">Prefer not to say</option>
+              {FOUND_US_OPTIONS.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">
+              What rating would you give us? (optional)
+            </label>
+            <div className="flex items-center gap-1" role="radiogroup" aria-label="Rating out of 5">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  role="radio"
+                  aria-checked={form.rating === n}
+                  aria-label={`${n} out of 5`}
+                  onClick={() => setForm((f) => ({ ...f, rating: f.rating === n ? 0 : n }))}
+                  className={`text-3xl leading-none transition ${
+                    n <= form.rating ? "text-[var(--color-gold)]" : "text-[var(--color-line)] hover:text-[var(--color-mist)]"
+                  }`}
+                >
+                  ★
+                </button>
+              ))}
+              {form.rating > 0 && <span className="ml-2 text-xs text-[var(--color-mist)]">{form.rating}/5</span>}
+            </div>
           </div>
 
           <label className="flex items-start gap-3 text-sm text-[var(--color-mist)] sm:col-span-2">

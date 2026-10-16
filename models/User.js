@@ -15,6 +15,9 @@ const UserSchema = new mongoose.Schema(
     // Referrals: each user has a shareable code; referredBy is set once, at registration.
     referralCode: { type: String, unique: true, sparse: true, uppercase: true, trim: true },
     referredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
+    // Optional registration survey
+    foundUs: { type: String, default: "", trim: true, maxlength: 40 },
+    rating: { type: Number, min: 1, max: 5 },
   },
   { timestamps: true }
 );
