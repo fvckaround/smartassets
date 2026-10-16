@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import { getCurrentAdmin } from "@/lib/session";
 import User from "@/models/User";
 import Transaction from "@/models/Transaction";
+import ReferralBonus from "@/models/ReferralBonus";
+import { REFERRAL_PERCENT } from "@/lib/referral";
 import { sendEmail } from "@/lib/email";
 
 export const maxDuration = 30;
@@ -26,6 +28,7 @@ export async function PATCH(req, { params }) {
     }
 
     let result;
+    let referral = null; // set when this deposit paid a referral bonus
     await dbSession.withTransaction(async () => {
       // Only a pending transaction can be reviewed, and only once.
       const tx = await Transaction.findOneAndUpdate(
@@ -42,6 +45,34 @@ export async function PATCH(req, { params }) {
 
       if (tx.type === "deposit" && action === "approve") {
         await User.updateOne({ _id: tx.user }, { $inc: { balance: tx.amount } }, { session: dbSession });
+
+        // Referral bonus: the referrer earns a percentage of EVERY approved deposit.
+        referral = null;
+        const depositor = await User.findById(tx.user).select("name referredBy").session(dbSession).lean();
+        if (depositor?.referredBy) {
+          const referrer = await User.findOne({ _id: depositor.referredBy, status: "active" })
+            .select("email name")
+            .session(dbSession)
+            .lean();
+          const bonus = Math.round(tx.amount * REFERRAL_PERCENT) / 100;
+          if (referrer && bonus > 0) {
+            await ReferralBonus.create(
+              [
+                {
+                  referrer: referrer._id,
+                  referred: tx.user,
+                  transaction: tx._id,
+                  depositAmount: tx.amount,
+                  percent: REFERRAL_PERCENT,
+                  amount: bonus,
+                },
+              ],
+              { session: dbSession }
+            );
+            await User.updateOne({ _id: referrer._id }, { $inc: { balance: bonus } }, { session: dbSession });
+            referral = { email: referrer.email, name: referrer.name, bonus, from: depositor.name };
+          }
+        }
       }
       if (tx.type === "withdrawal" && action === "reject") {
         // Return the held funds.
@@ -77,6 +108,23 @@ export async function PATCH(req, { params }) {
                }
                ${siteUrl ? `<p><a href="${siteUrl}/dashboard" style="color:#1fd18a;">View your dashboard</a></p>` : ""}`,
       });
+    }
+
+    if (referral) {
+      try {
+        const siteUrl2 = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "");
+        await sendEmail({
+          to: referral.email,
+          subject: "You earned a referral bonus",
+          title: "Referral bonus received",
+          html: `<p>Good news, ${String(referral.name || "").split(" ")[0].replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}! A deposit from someone you referred was approved.</p>
+                 <p><strong>$${referral.bonus.toLocaleString()}</strong> (${REFERRAL_PERCENT}% of the deposit) has been added to your available balance.</p>
+                 <p>You earn this bonus on every approved deposit they make.</p>
+                 ${siteUrl2 ? `<p><a href="${siteUrl2}/dashboard/referrals" style="color:#1fd18a;">View your referrals</a></p>` : ""}`,
+        });
+      } catch (mailErr) {
+        console.error("referral email error:", mailErr);
+      }
     }
 
     return NextResponse.json({ ok: true });

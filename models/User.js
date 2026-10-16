@@ -7,11 +7,14 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     // Balance only ever changes through approved deposits, investment
-    // settlement and approved withdrawals (see /api routes).
+    // settlement, approved withdrawals, referral bonuses and admin adjustments (see /api routes).
     balance: { type: Number, default: 0, min: 0 },
     country: { type: String, default: "" },
     phone: { type: String, default: "" },
     status: { type: String, enum: ["active", "suspended"], default: "active" },
+    // Referrals: each user has a shareable code; referredBy is set once, at registration.
+    referralCode: { type: String, unique: true, sparse: true, uppercase: true, trim: true },
+    referredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
   },
   { timestamps: true }
 );

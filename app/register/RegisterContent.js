@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
@@ -13,10 +13,21 @@ export default function RegisterContent() {
     phone: "",
     country: "",
     password: "",
+    ref: "",
     acceptedRisk: false,
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Pre-fill the referral code from a link like /register?ref=ABC12345
+  useEffect(() => {
+    try {
+      const ref = new URLSearchParams(window.location.search).get("ref");
+      if (ref) setForm((f) => ({ ...f, ref: ref.trim().toUpperCase() }));
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const set = (k) => (e) =>
     setForm((f) => ({ ...f, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
@@ -84,6 +95,18 @@ export default function RegisterContent() {
               value={form.password}
               onChange={set("password")}
               autoComplete="new-password"
+            />
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Referral code (optional)</label>
+            <input
+              className="input uppercase"
+              value={form.ref}
+              onChange={set("ref")}
+              autoComplete="off"
+              maxLength={20}
+              placeholder="e.g. K7M2QX9A"
             />
           </div>
 

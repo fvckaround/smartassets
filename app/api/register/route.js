@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import { sendEmail, adminEmail } from "@/lib/email";
+import { generateReferralCode } from "@/lib/referral";
 
 export const maxDuration = 30;
 
@@ -15,6 +16,7 @@ export async function POST(req) {
     const country = String(body.country || "").trim();
     const phone = String(body.phone || "").trim();
     const acceptedRisk = body.acceptedRisk === true;
+    const refCode = String(body.ref || "").trim().toUpperCase();
 
     if (name.length < 2) {
       return NextResponse.json({ error: "Please enter your full name." }, { status: 400 });
@@ -38,8 +40,39 @@ export async function POST(req) {
       return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
     }
 
+    // Optional referral code: must belong to a real, active user.
+    let referredBy;
+    if (refCode) {
+      const referrer = await User.findOne({ referralCode: refCode, status: "active" }).select("_id").lean();
+      if (!referrer) {
+        return NextResponse.json({ error: "That referral code is not valid." }, { status: 400 });
+      }
+      referredBy = referrer._id;
+    }
+
     const hashed = await bcrypt.hash(password, 12);
-    await User.create({ name, email, password: hashed, country, phone });
+    let created = false;
+    for (let i = 0; i < 5 && !created; i++) {
+      try {
+        await User.create({
+          name,
+          email,
+          password: hashed,
+          country,
+          phone,
+          referralCode: generateReferralCode(),
+          ...(referredBy ? { referredBy } : {}),
+        });
+        created = true;
+      } catch (e) {
+        // Duplicate referral code: try a new one. A duplicate email is a real conflict.
+        if (e?.code === 11000 && e?.keyPattern?.email) {
+          return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
+        }
+        if (e?.code !== 11000) throw e;
+      }
+    }
+    if (!created) throw new Error("Could not create user");
 
     await sendEmail({
       to: email,
