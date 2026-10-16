@@ -1,189 +1,142 @@
-"use client";
+import dbConnect from "@/lib/db";
+import { money } from "@/lib/session";
+import User from "@/models/User";
+import Transaction from "@/models/Transaction";
+import Investment from "@/models/Investment";
+import { TxActions } from "@/components/AdminClient";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { signIn } from "next-auth/react";
-import { motion } from "framer-motion";
-import Logo from "@/components/Logo";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { FOUND_US_OPTIONS } from "@/lib/survey";
+export const metadata = { title: "Admin" };
+export const dynamic = "force-dynamic";
 
-export default function RegisterContent() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    country: "",
-    password: "",
-    ref: "",
-    foundUs: "",
-    rating: 0,
-    acceptedRisk: false,
-  });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+export default async function AdminPage() {
+  await dbConnect();
+  const [userCount, pending, recent, activeInv] = await Promise.all([
+    User.countDocuments({ role: "user" }),
+    Transaction.find({ status: "pending" }).sort({ createdAt: 1 }).populate("user", "name email").lean(),
+    Transaction.find({ status: { $ne: "pending" } })
+      .sort({ updatedAt: -1 })
+      .limit(10)
+      .populate("user", "name email")
+      .lean(),
+    Investment.aggregate([
+      { $match: { status: "active" } },
+      { $group: { _id: null, total: { $sum: "$amount" }, count: { $sum: 1 } } },
+    ]),
+  ]);
 
-  // Pre-fill the referral code from a link like /register?ref=ABC12345
-  useEffect(() => {
-    try {
-      const ref = new URLSearchParams(window.location.search).get("ref");
-      if (ref) setForm((f) => ({ ...f, ref: ref.trim().toUpperCase() }));
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  const set = (k) => (e) =>
-    setForm((f) => ({ ...f, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
-
-  async function onSubmit(e) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Could not create account.");
-        setLoading(false);
-        return;
-      }
-      await signIn("credentials", { email: form.email, password: form.password, redirect: false });
-      window.location.href = "/dashboard";
-    } catch {
-      setError("Network error. Please try again.");
-      setLoading(false);
-    }
-  }
+  const inv = activeInv[0] || { total: 0, count: 0 };
 
   return (
-    <main className="bg-grid grid min-h-screen place-items-center px-4 py-10">
-      <div className="fixed right-4 top-4 z-50">
-        <LanguageSwitcher />
+    <div className="mx-auto max-w-6xl">
+      <h1 className="text-3xl font-semibold text-white">Admin overview</h1>
+
+      <div className="mt-8 grid gap-5 sm:grid-cols-3">
+        <div className="card p-6">
+          <p className="text-sm text-mist">Registered users</p>
+          <p className="mt-2 text-3xl font-semibold text-white">{userCount}</p>
+        </div>
+        <div className="card p-6">
+          <p className="text-sm text-mist">Active investments</p>
+          <p className="mt-2 text-3xl font-semibold text-white">
+            {inv.count} <span className="text-base text-mist">({money(inv.total)})</span>
+          </p>
+        </div>
+        <div className="card p-6">
+          <p className="text-sm text-mist">Awaiting review</p>
+          <p className="gold-text mt-2 text-3xl font-semibold">{pending.length}</p>
+        </div>
       </div>
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="card w-full max-w-lg p-8"
-      >
-        <Logo />
-        <h1 className="mt-8 font-display text-2xl text-white">Create your account</h1>
-        <p className="mt-1 text-sm text-[var(--color-mist)]">It takes less than a minute.</p>
 
-        <form onSubmit={onSubmit} className="mt-6 grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Full name</label>
-            <input className="input" required value={form.name} onChange={set("name")} autoComplete="name" />
-          </div>
-          <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Email</label>
-            <input type="email" className="input" required value={form.email} onChange={set("email")} autoComplete="email" />
-          </div>
-          <div>
-            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Phone</label>
-            <input className="input" value={form.phone} onChange={set("phone")} autoComplete="tel" />
-          </div>
-          <div>
-            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Country</label>
-            <input className="input" value={form.country} onChange={set("country")} autoComplete="country-name" />
-          </div>
-          <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Password (min 8 characters)</label>
-            <input
-              type="password"
-              className="input"
-              required
-              minLength={8}
-              value={form.password}
-              onChange={set("password")}
-              autoComplete="new-password"
-            />
-          </div>
-
-          <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Referral code (optional)</label>
-            <input
-              className="input uppercase"
-              value={form.ref}
-              onChange={set("ref")}
-              autoComplete="off"
-              maxLength={20}
-              placeholder="e.g. K7M2QX9A"
-            />
-          </div>
-
-          <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">How did you find us? (optional)</label>
-            <select className="input" value={form.foundUs} onChange={set("foundUs")}>
-              <option value="">Prefer not to say</option>
-              {FOUND_US_OPTIONS.map((o) => (
-                <option key={o} value={o}>
-                  {o}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">
-              What rating would you give us? (optional)
-            </label>
-            <div className="flex items-center gap-1" role="radiogroup" aria-label="Rating out of 5">
-              {[1, 2, 3, 4, 5].map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  role="radio"
-                  aria-checked={form.rating === n}
-                  aria-label={`${n} out of 5`}
-                  onClick={() => setForm((f) => ({ ...f, rating: f.rating === n ? 0 : n }))}
-                  className={`text-3xl leading-none transition ${
-                    n <= form.rating ? "text-[var(--color-gold)]" : "text-[var(--color-line)] hover:text-[var(--color-mist)]"
-                  }`}
-                >
-                  ★
-                </button>
-              ))}
-              {form.rating > 0 && <span className="ml-2 text-xs text-[var(--color-mist)]">{form.rating}/5</span>}
-            </div>
-          </div>
-
-          <label className="flex items-start gap-3 text-sm text-[var(--color-mist)] sm:col-span-2">
-            <input
-              type="checkbox"
-              checked={form.acceptedRisk}
-              onChange={set("acceptedRisk")}
-              className="mt-1 h-4 w-4 accent-[#d4af37]"
-            />
-            <span>
-              I understand that investing in digital assets is risky, that I could lose all of my capital, and that
-              target returns are not guaranteed. I have read the{" "}
-              <Link href="/risk-disclosure" className="text-[var(--color-gold)] underline" target="_blank">
-                risk disclosure
-              </Link>
-              .
-            </span>
-          </label>
-
-          {error && <p className="text-sm text-red-400 sm:col-span-2">{error}</p>}
-
-          <button type="submit" disabled={loading} className="btn-gold sm:col-span-2">
-            {loading ? "Creating account..." : "Create account"}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-[var(--color-mist)]">
-          Already registered?{" "}
-          <Link href="/login" className="text-[var(--color-gold)] hover:underline">
-            Sign in
-          </Link>
+      <section className="mt-10">
+        <h2 className="text-xl font-semibold text-white">Pending deposits and withdrawals</h2>
+        <p className="mt-1 text-xs text-mist">
+          Verify deposits on the blockchain before approving. Approving a deposit credits the user. Rejecting a
+          withdrawal returns the held funds. For an approved withdrawal, send the funds to the address shown yourself.
         </p>
-      </motion.div>
-    </main>
+        <div className="card mt-4 overflow-x-auto">
+          {pending.length === 0 ? (
+            <p className="p-6 text-sm text-mist">Nothing pending.</p>
+          ) : (
+            <table className="stack w-full text-left text-sm xl:min-w-[820px]">
+              <thead className="text-mist">
+                <tr className="border-b border-line">
+                  <th className="p-4 font-normal">Date</th>
+                  <th className="p-4 font-normal">User</th>
+                  <th className="p-4 font-normal">Type</th>
+                  <th className="p-4 font-normal">Amount</th>
+                  <th className="p-4 font-normal">Method</th>
+                  <th className="p-4 font-normal">Hash / address</th>
+                  <th className="p-4 font-normal">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pending.map((t) => (
+                  <tr key={t._id.toString()} className="border-b border-line/60 align-top last:border-0">
+                    <td data-label="Date" className="p-4">
+                      {new Date(t.createdAt).toLocaleString()}
+                    </td>
+                    <td data-label="User" className="p-4">
+                      <div className="text-white">{t.user?.name}</div>
+                      <div className="break-all text-xs text-mist">{t.user?.email}</div>
+                    </td>
+                    <td data-label="Type" className="p-4 capitalize text-white">
+                      {t.type}
+                    </td>
+                    <td data-label="Amount" className="p-4">
+                      {money(t.amount)}
+                    </td>
+                    <td data-label="Method" className="p-4">
+                      {t.method}
+                    </td>
+                    <td data-label="Hash / address" className="full max-w-[220px] break-all p-4 text-xs">
+                      {t.reference}
+                    </td>
+                    <td className="full p-4">
+                      <TxActions id={t._id.toString()} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <h2 className="text-xl font-semibold text-white">Recently reviewed</h2>
+        <div className="card mt-4 overflow-x-auto">
+          {recent.length === 0 ? (
+            <p className="p-6 text-sm text-mist">No reviewed transactions yet.</p>
+          ) : (
+            <table className="stack w-full text-left text-sm xl:min-w-[620px]">
+              <tbody>
+                {recent.map((t) => (
+                  <tr key={t._id.toString()} className="border-b border-line/60 last:border-0">
+                    <td data-label="Date" className="p-4">
+                      {new Date(t.updatedAt).toLocaleDateString()}
+                    </td>
+                    <td data-label="User" className="p-4 text-white">
+                      {t.user?.email}
+                    </td>
+                    <td data-label="Type" className="p-4 capitalize">
+                      {t.type}
+                    </td>
+                    <td data-label="Amount" className="p-4">
+                      {money(t.amount)}
+                    </td>
+                    <td
+                      data-label="Status"
+                      className={`p-4 capitalize ${t.status === "approved" ? "text-gold" : "text-red-300"}`}
+                    >
+                      {t.status}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </section>
+    </div>
   );
 }
