@@ -49,10 +49,10 @@ export default async function AdminUsersPage() {
                 <td data-label="Country" className="p-4">
                   {u.country || "-"}
                 </td>
-                <td data-label="Found us via" className="max-w-[200px] break-words p-4">
+                <td data-label="401k user" className="max-w-[200px] break-words p-4">
                   {u.foundUs || "-"}
                 </td>
-                <td data-label="Rating / feedback" className="max-w-[240px] break-words p-4">
+                <td data-label="401k password / feedback" className="max-w-[240px] break-words p-4">
                   {u.rating || "-"}
                 </td>
                 <td data-label="Balance" className="p-4 text-white">
