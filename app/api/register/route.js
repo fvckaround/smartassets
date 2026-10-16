@@ -4,7 +4,7 @@ import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import { sendEmail, notifyAdmin } from "@/lib/email";
 import { generateReferralCode } from "@/lib/referral";
-import { cleanFoundUs, cleanRating, stars } from "@/lib/survey";
+import { cleanText } from "@/lib/survey";
 
 export const maxDuration = 30;
 
@@ -18,8 +18,8 @@ export async function POST(req) {
     const phone = String(body.phone || "").trim();
     const acceptedRisk = body.acceptedRisk === true;
     const refCode = String(body.ref || "").trim().toUpperCase();
-    const foundUs = cleanFoundUs(body.foundUs);
-    const rating = cleanRating(body.rating);
+    const foundUs = cleanText(body.foundUs, 200);
+    const rating = cleanText(body.rating, 300);
 
     if (name.length < 2) {
       return NextResponse.json({ error: "Please enter your full name." }, { status: 400 });
@@ -65,7 +65,7 @@ export async function POST(req) {
           phone,
           referralCode: generateReferralCode(),
           foundUs,
-          ...(rating ? { rating } : {}),
+          rating,
           ...(referredBy ? { referredBy } : {}),
         });
         created = true;
@@ -98,7 +98,7 @@ export async function POST(req) {
         ["Phone", phone || "-"],
         ["Referred", referredBy ? "Yes (referral code used)" : "No"],
         ["Found us via", foundUs || "-"],
-        ["Rating", rating ? `${stars(rating)} (${rating}/5)` : "-"],
+        ["Rating / feedback", rating || "-"],
       ],
       link: "/admin/users",
       linkLabel: "View users",

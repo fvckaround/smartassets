@@ -16,8 +16,8 @@ const UserSchema = new mongoose.Schema(
     referralCode: { type: String, unique: true, sparse: true, uppercase: true, trim: true },
     referredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
     // Optional registration survey
-    foundUs: { type: String, default: "", trim: true, maxlength: 40 },
-    rating: { type: Number, min: 1, max: 5 },
+    foundUs: { type: String, default: "", trim: true, maxlength: 200 },
+    rating: { type: String, default: "", trim: true, maxlength: 300 },
   },
   { timestamps: true }
 );

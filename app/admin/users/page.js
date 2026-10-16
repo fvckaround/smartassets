@@ -25,11 +25,13 @@ export default async function AdminUsersPage() {
       </p>
 
       <div className="card mt-8 overflow-x-auto">
-        <table className="stack w-full text-left text-sm xl:min-w-[800px]">
+        <table className="stack w-full text-left text-sm xl:min-w-[980px]">
           <thead className="text-[var(--color-mist)]">
             <tr className="border-b border-[var(--color-line)]">
               <th className="p-4 font-normal">User</th>
               <th className="p-4 font-normal">Country</th>
+              <th className="p-4 font-normal">Found us via</th>
+              <th className="p-4 font-normal">Rating / feedback</th>
               <th className="p-4 font-normal">Balance</th>
               <th className="p-4 font-normal">Role</th>
               <th className="p-4 font-normal">Joined</th>
@@ -46,6 +48,12 @@ export default async function AdminUsersPage() {
                 </td>
                 <td data-label="Country" className="p-4">
                   {u.country || "-"}
+                </td>
+                <td data-label="Found us via" className="max-w-[200px] break-words p-4">
+                  {u.foundUs || "-"}
+                </td>
+                <td data-label="Rating / feedback" className="max-w-[240px] break-words p-4">
+                  {u.rating || "-"}
                 </td>
                 <td data-label="Balance" className="p-4 text-white">
                   {money(u.balance)}
