@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Logo from "@/components/Logo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const links = [
   { href: "#plans", label: "Plans" },
@@ -29,6 +30,7 @@ export default function Nav() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <LanguageSwitcher />
           <Link href="/login" className="btn-ghost text-sm">
             Sign in
           </Link>
@@ -62,6 +64,7 @@ export default function Nav() {
               </a>
             ))}
           </nav>
+          <LanguageSwitcher className="mt-4" />
           <div className="mt-4 grid grid-cols-2 gap-3">
             <Link href="/login" className="btn-ghost text-center text-sm">
               Sign in

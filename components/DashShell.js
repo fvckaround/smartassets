@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Logo from "@/components/Logo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function DashShell({ user, links, children, badge }) {
   const pathname = usePathname();
@@ -54,6 +55,7 @@ export default function DashShell({ user, links, children, badge }) {
               ))}
             </nav>
             <div className="mt-4 border-t border-line pt-4">
+              <LanguageSwitcher className="mb-4" />
               <p className="truncate text-sm text-white">{user.name}</p>
               <p className="truncate text-xs text-mist">{user.email}</p>
               <button
@@ -87,6 +89,7 @@ export default function DashShell({ user, links, children, badge }) {
         </nav>
 
         <div className="px-5 py-6">
+          <LanguageSwitcher className="mb-4" />
           <p className="truncate text-sm text-white">{user.name}</p>
           <p className="truncate text-xs text-mist">{user.email}</p>
           <button onClick={() => signOut({ callbackUrl: "/" })} className="btn-ghost mt-3 w-full text-sm">

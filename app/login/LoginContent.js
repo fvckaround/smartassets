@@ -5,6 +5,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function LoginContent() {
   const [email, setEmail] = useState("");
@@ -28,6 +29,9 @@ export default function LoginContent() {
 
   return (
     <main className="bg-grid grid min-h-screen place-items-center px-4 py-10">
+      <div className="fixed right-4 top-4 z-50">
+        <LanguageSwitcher />
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
