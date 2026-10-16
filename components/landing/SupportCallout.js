@@ -2,7 +2,7 @@ import Link from "next/link";
 import Reveal from "./Reveal";
 
 export default function SupportCallout() {
-  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL;
+  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "smartassetsglobal@gmail.com";
 
   return (
     <section className="py-20">
@@ -19,9 +19,9 @@ export default function SupportCallout() {
                 Create an account
               </Link>
               {email ? (
-                <a href={`mailto:${email}`} className="btn-ghost w-full px-8 sm:w-auto">
-                  Email {email}
-                </a>
+                <Link href="/contact" className="btn-ghost w-full px-8 sm:w-auto">
+                  Contact us
+                </Link>
               ) : (
                 <Link href="/risk-disclosure" className="btn-ghost w-full px-8 sm:w-auto">
                   Read the risk disclosure

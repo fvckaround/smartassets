@@ -11,6 +11,7 @@ const links = [
   { href: "#how", label: "How it works" },
   { href: "#security", label: "Security" },
   { href: "#faq", label: "FAQ" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Nav() {

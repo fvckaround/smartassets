@@ -28,6 +28,11 @@ export default function Footer() {
                     Create account
                   </Link>
                 </li>
+                <li>
+                  <Link href="/contact" className="hover:text-white">
+                    Contact us
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
