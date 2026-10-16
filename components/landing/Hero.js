@@ -10,7 +10,17 @@ const fade = {
 
 export default function Hero() {
   return (
-    <section className="bg-grid relative overflow-hidden">
+    <section className="bg-grid relative overflow-hidden bg-ink">
+      {/* Background photo: save your image as public/hero-bg.jpg. If it is missing, the dark green shows instead. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/hero-bg.jpg')" }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/85 via-ink/75 to-ink"
+      />
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[480px] w-[760px] -translate-x-1/2 rounded-full bg-gold/10 blur-3xl" />
       <div className="relative mx-auto max-w-6xl px-4 py-20 text-center md:py-32">
         <motion.p
