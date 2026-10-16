@@ -21,8 +21,9 @@ export default async function AdminInvestmentsPage() {
     <div className="mx-auto max-w-6xl">
       <h1 className="text-3xl font-semibold text-white">Investments</h1>
       <p className="mt-1 text-sm text-mist">
-        Settle an investment when its term ends by recording the actual payout. The payout is credited to the
-        investor&apos;s balance and can be less than, equal to, or more than the amount invested.
+        Investments are paid out automatically when their term ends (amount plus the plan&apos;s target return).
+        You can still settle an active one yourself with a custom payout, which can be less than, equal to, or
+        more than the amount invested.
       </p>
 
       <div className="card mt-8 overflow-x-auto">
@@ -38,7 +39,7 @@ export default async function AdminInvestmentsPage() {
                 <th className="p-4 font-normal">Target</th>
                 <th className="p-4 font-normal">Ends</th>
                 <th className="p-4 font-normal">Status</th>
-                <th className="p-4 font-normal">Settle</th>
+                <th className="p-4 font-normal">Payout / override</th>
               </tr>
             </thead>
             <tbody>
@@ -66,7 +67,7 @@ export default async function AdminInvestmentsPage() {
                     <td data-label="Status" className="p-4 capitalize">
                       {i.status}
                     </td>
-                    <td data-label="Settle" className="full p-4">
+                    <td data-label="Payout" className="full p-4">
                       {i.status === "active" ? (
                         <SettleForm id={i._id.toString()} amount={i.amount} />
                       ) : i.status === "settled" ? (

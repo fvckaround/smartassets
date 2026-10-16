@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCurrentUser, money } from "@/lib/session";
 import Investment from "@/models/Investment";
 import Transaction from "@/models/Transaction";
+import { settleDue } from "@/lib/settle";
 
 export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -22,6 +23,15 @@ function Pill({ s }) {
 }
 
 export default async function DashboardPage() {
+  // Pay out any of this user's investments whose term has ended, then load fresh data.
+  const first = await getCurrentUser();
+  if (first) {
+    try {
+      await settleDue({ userId: first._id, limit: 50 });
+    } catch (err) {
+      console.error("dashboard settle error:", err);
+    }
+  }
   const user = await getCurrentUser();
 
   const [investments, transactions] = await Promise.all([
