@@ -77,7 +77,7 @@ export default function ContactContent() {
             <ul className="mt-2 list-disc space-y-1.5 pl-5">
               <li>Include the email you registered with.</li>
               <li>For a deposit or withdrawal, include the amount and transaction reference.</li>
-              <li>We will never ask for your password or private keys.</li>
+              
             </ul>
           </div>
         </div>
