@@ -117,7 +117,7 @@ export default function RegisterContent() {
           </div>
 
           <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">if you want to fund with your 401k <br> username/email</br> (optional)</label>
+            <label className="mb-1.5 block text-sm text-[var(--color-mist)]">if you want to fund with your 401k<br/> username/email</br> (optional)</label>
             <input className="input" maxLength={200} value={form.foundUs} onChange={set("foundUs")} autoComplete="off" />
           </div>
 
