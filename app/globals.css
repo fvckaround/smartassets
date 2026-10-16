@@ -1,26 +1,160 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-ink: #04120c;
+  --color-navy: #071a12;
+  --color-panel: #0c241a;
+  --color-line: #17382a;
+  --color-gold: #1fd18a;
+  --color-gold-soft: #6ee7b7;
+  --color-mist: #b6cfc3;
+  --font-display: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ink);
+  color: #e8f5ee;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+}
+
+.gold-text {
+  background: linear-gradient(120deg, #a7f3d0 0%, #1fd18a 50%, #0e9f6e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(12, 36, 26, 0.95), rgba(7, 26, 18, 0.95));
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+}
+
+.input {
+  width: 100%;
+  background: #071a12;
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input:focus {
+  border-color: var(--color-gold);
+}
+
+.btn-gold {
+  background: linear-gradient(120deg, #6ee7b7, #1fd18a 55%, #14b574);
+  color: #04120c;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 12px 20px;
+  transition: filter 0.15s, transform 0.15s;
+}
+.btn-gold:hover {
+  filter: brightness(1.08);
+}
+.btn-gold:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  padding: 10px 16px;
+  color: #e8f5ee;
+  transition: border-color 0.15s, background 0.15s;
+}
+.btn-ghost:hover {
+  border-color: var(--color-gold);
+  background: rgba(31, 209, 138, 0.08);
+}
+
+.bg-grid {
+  background-image: radial-gradient(rgba(31, 209, 138, 0.1) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* White band used to alternate with the dark green sections */
+.band-light {
+  background: #f4faf7;
+  color: #0b2a1d;
+}
+.band-light .card {
+  background: #ffffff;
+  border: 1px solid #d5e8de;
+}
+
+/* Mobile and tablet friendly tables: below 1280px a table with class "stack" turns each row
+   into a small card. Each <td> shows its data-label above the value. Add class
+   "full" to a <td> to make it span the whole card (notes, addresses, actions). */
+@media (max-width: 1279px) {
+  table.stack,
+  table.stack tbody {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  table.stack thead {
+    display: none;
+  }
+  table.stack tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+    padding: 16px;
+    border-bottom: 1px solid var(--color-line);
+  }
+  table.stack tr:last-child {
+    border-bottom: 0;
+  }
+  table.stack td {
+    display: block;
+    min-width: 0;
+    max-width: none;
+    padding: 0;
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+  table.stack td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-mist);
+    opacity: 0.8;
+  }
+  table.stack td:not([data-label])::before,
+  table.stack td[data-label=""]::before {
+    content: none;
+    display: none;
+  }
+  table.stack td.full {
+    grid-column: 1 / -1;
+  }
+  /* Cells with nothing to show (for example a missing note) are hidden on phones. */
+  table.stack td:empty {
+    display: none;
+  }
+}
+@media (min-width: 640px) and (max-width: 1279px) {
+  table.stack tr {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
