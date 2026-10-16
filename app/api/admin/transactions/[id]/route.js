@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
+import dbConnect from "@/lib/db";
 import { getCurrentAdmin } from "@/lib/session";
 import User from "@/models/User";
 import Transaction from "@/models/Transaction";
@@ -10,8 +11,11 @@ import { sendEmail } from "@/lib/email";
 export const maxDuration = 30;
 
 export async function PATCH(req, { params }) {
-  const dbSession = await mongoose.startSession();
+  let dbSession;
   try {
+    // Connect first: on a cold start the session cannot be created before the DB is connected.
+    await dbConnect();
+    dbSession = await mongoose.startSession();
     const admin = await getCurrentAdmin();
     if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
@@ -135,6 +139,6 @@ export async function PATCH(req, { params }) {
     console.error("admin tx error:", err);
     return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
   } finally {
-    await dbSession.endSession();
+    if (dbSession) await dbSession.endSession();
   }
 }

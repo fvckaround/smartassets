@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
+import dbConnect from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import User from "@/models/User";
 import Plan from "@/models/Plan";
@@ -9,8 +10,11 @@ import { sendEmail, notifyAdmin } from "@/lib/email";
 export const maxDuration = 30;
 
 export async function POST(req) {
-  const dbSession = await mongoose.startSession();
+  let dbSession;
   try {
+    // Connect first: on a cold start the session cannot be created before the DB is connected.
+    await dbConnect();
+    dbSession = await mongoose.startSession();
     const user = await getCurrentUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -86,6 +90,6 @@ export async function POST(req) {
     console.error("investment error:", err);
     return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
   } finally {
-    await dbSession.endSession();
+    if (dbSession) await dbSession.endSession();
   }
 }
