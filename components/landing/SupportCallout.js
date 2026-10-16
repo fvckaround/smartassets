@@ -1,9 +1,8 @@
 import Link from "next/link";
 import Reveal from "./Reveal";
+import { whatsappLink } from "@/lib/contact";
 
 export default function SupportCallout() {
-  const email = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "smartassetsglobal@gmail.com";
-
   return (
     <section className="py-20">
       <div className="mx-auto max-w-4xl px-4">
@@ -18,15 +17,17 @@ export default function SupportCallout() {
               <Link href="/register" className="btn-gold w-full px-8 sm:w-auto">
                 Create an account
               </Link>
-              {email ? (
-                <Link href="/contact" className="btn-ghost w-full px-8 sm:w-auto">
-                  Contact us
-                </Link>
-              ) : (
-                <Link href="/risk-disclosure" className="btn-ghost w-full px-8 sm:w-auto">
-                  Read the risk disclosure
-                </Link>
-              )}
+              <Link href="/contact" className="btn-ghost w-full px-8 sm:w-auto">
+                Contact us
+              </Link>
+              <a
+                href={whatsappLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full rounded-lg bg-[#25D366] px-8 py-3 text-center text-sm font-semibold text-white hover:brightness-110 sm:w-auto"
+              >
+                WhatsApp us
+              </a>
             </div>
           </div>
         </Reveal>

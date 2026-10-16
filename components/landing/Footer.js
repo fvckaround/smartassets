@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
+import { whatsappLink } from "@/lib/contact";
 
 export default function Footer() {
   return (
@@ -32,6 +33,11 @@ export default function Footer() {
                   <Link href="/contact" className="hover:text-white">
                     Contact us
                   </Link>
+                </li>
+                <li>
+                  <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                    WhatsApp support
+                  </a>
                 </li>
               </ul>
             </div>

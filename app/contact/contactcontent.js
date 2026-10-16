@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { whatsappLink, WHATSAPP_DISPLAY } from "@/lib/contact";
 
 const EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "smartassetsglobal@gmail.com";
 
@@ -57,6 +58,19 @@ export default function ContactContent() {
             <p className="mt-2 text-sm text-[var(--color-mist)]">
               We reply to every message, usually within one business day.
             </p>
+          </div>
+          <div className="card p-6">
+            <p className="text-xs uppercase tracking-widest text-[var(--color-mist)]">WhatsApp</p>
+            <p className="notranslate mt-2 text-lg text-white">{WHATSAPP_DISPLAY}</p>
+            <p className="mt-2 text-sm text-[var(--color-mist)]">Chat with our support team directly.</p>
+            <a
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-block rounded-lg bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white hover:brightness-110"
+            >
+              Chat on WhatsApp
+            </a>
           </div>
           <div className="card p-6 text-sm leading-relaxed text-[var(--color-mist)]">
             <p className="font-medium text-white">Before you write</p>
