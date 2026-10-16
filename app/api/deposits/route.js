@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/session";
 import { walletLabel } from "@/lib/wallets";
 import Wallet from "@/models/Wallet";
 import Transaction from "@/models/Transaction";
-import { sendEmail, adminEmail } from "@/lib/email";
+import { sendEmail, notifyAdmin } from "@/lib/email";
 
 export const maxDuration = 30;
 
@@ -45,11 +45,23 @@ export async function POST(req) {
 
     await sendEmail({
       to: user.email,
-      bcc: adminEmail(),
       subject: "Deposit received for review",
       title: "We received your deposit request",
       html: `<p>Your deposit request of <strong>$${amount.toLocaleString()}</strong> via ${method} is pending review.
              Your balance will be credited once the transfer is confirmed.</p>`,
+    });
+
+    await notifyAdmin({
+      subject: `New deposit request: $${amount.toLocaleString()} from ${user.name}`,
+      title: "New deposit awaiting review",
+      rows: [
+        ["User", `${user.name} (${user.email})`],
+        ["Amount", `$${amount.toLocaleString()}`],
+        ["Method", method],
+        ["Hash / reference", reference],
+      ],
+      link: "/admin",
+      linkLabel: "Review this deposit",
     });
 
     return NextResponse.json({ ok: true }, { status: 201 });

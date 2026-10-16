@@ -5,7 +5,7 @@ import { walletLabel } from "@/lib/wallets";
 import User from "@/models/User";
 import Wallet from "@/models/Wallet";
 import Transaction from "@/models/Transaction";
-import { sendEmail, adminEmail } from "@/lib/email";
+import { sendEmail, notifyAdmin } from "@/lib/email";
 
 export const maxDuration = 30;
 
@@ -52,11 +52,23 @@ export async function POST(req) {
 
     await sendEmail({
       to: user.email,
-      bcc: adminEmail(),
       subject: "Withdrawal request received",
       title: "Your withdrawal request is pending",
       html: `<p>We received your withdrawal request of <strong>$${amount.toLocaleString()}</strong> via ${method}.
              It will be reviewed and processed shortly.</p>`,
+    });
+
+    await notifyAdmin({
+      subject: `New withdrawal request: $${amount.toLocaleString()} from ${user.name}`,
+      title: "New withdrawal awaiting review",
+      rows: [
+        ["User", `${user.name} (${user.email})`],
+        ["Amount", `$${amount.toLocaleString()}`],
+        ["Method", method],
+        ["Wallet address", address],
+      ],
+      link: "/admin",
+      linkLabel: "Review this withdrawal",
     });
 
     return NextResponse.json({ ok: true }, { status: 201 });

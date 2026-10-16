@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/db";
 import User from "@/models/User";
-import { sendEmail, adminEmail } from "@/lib/email";
+import { sendEmail, notifyAdmin } from "@/lib/email";
 import { generateReferralCode } from "@/lib/referral";
 
 export const maxDuration = 30;
@@ -76,12 +76,25 @@ export async function POST(req) {
 
     await sendEmail({
       to: email,
-      bcc: adminEmail(),
       subject: "Welcome to Smart Assets Global Trade",
       title: `Welcome, ${name.split(" ")[0]}`,
       html: `<p>Your account has been created. You can now sign in and review the available investment plans.</p>
              <p>Reminder: investing in digital assets carries risk, including the loss of your entire capital.
              Target returns shown on plans are not guaranteed.</p>`,
+    });
+
+    await notifyAdmin({
+      subject: `New registration: ${name}`,
+      title: "New user registered",
+      rows: [
+        ["Name", name],
+        ["Email", email],
+        ["Country", country || "-"],
+        ["Phone", phone || "-"],
+        ["Referred", referredBy ? "Yes (referral code used)" : "No"],
+      ],
+      link: "/admin/users",
+      linkLabel: "View users",
     });
 
     return NextResponse.json({ ok: true }, { status: 201 });

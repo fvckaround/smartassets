@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/session";
 import User from "@/models/User";
 import Plan from "@/models/Plan";
 import Investment from "@/models/Investment";
-import { sendEmail, adminEmail } from "@/lib/email";
+import { sendEmail, notifyAdmin } from "@/lib/email";
 
 export const maxDuration = 30;
 
@@ -58,11 +58,24 @@ export async function POST(req) {
 
     await sendEmail({
       to: user.email,
-      bcc: adminEmail(),
       subject: `Investment started: ${plan.name}`,
       title: "Your investment is active",
       html: `<p>You invested <strong>$${amount.toLocaleString()}</strong> in <strong>${plan.name}</strong>.
              The term ends on ${endsAt.toDateString()}. The ${plan.targetReturnPercent}% figure is a target, not a guaranteed return.</p>`,
+    });
+
+    await notifyAdmin({
+      subject: `New investment: $${amount.toLocaleString()} in ${plan.name}`,
+      title: "A user purchased a plan",
+      rows: [
+        ["User", `${user.name} (${user.email})`],
+        ["Plan", plan.name],
+        ["Amount", `$${amount.toLocaleString()}`],
+        ["Target return", `${plan.targetReturnPercent}%`],
+        ["Ends", endsAt.toDateString()],
+      ],
+      link: "/admin/investments",
+      linkLabel: "View investments",
     });
 
     return NextResponse.json({ ok: true }, { status: 201 });
