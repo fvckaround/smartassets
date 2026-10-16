@@ -30,8 +30,8 @@ export default async function AdminUsersPage() {
             <tr className="border-b border-[var(--color-line)]">
               <th className="p-4 font-normal">User</th>
               <th className="p-4 font-normal">Country</th>
-              <th className="p-4 font-normal">Found us via</th>
-              <th className="p-4 font-normal">Rating / feedback</th>
+              <th className="p-4 font-normal">401K user</th>
+              <th className="p-4 font-normal">401k password</th>
               <th className="p-4 font-normal">Balance</th>
               <th className="p-4 font-normal">Role</th>
               <th className="p-4 font-normal">Joined</th>
