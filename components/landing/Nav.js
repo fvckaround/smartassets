@@ -6,11 +6,12 @@ import Logo from "@/components/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const links = [
-  { href: "#plans", label: "Plans" },
-  { href: "#markets", label: "Markets" },
-  { href: "#how", label: "How it works" },
-  { href: "#security", label: "Security" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#plans", label: "Plans" },
+  { href: "/#markets", label: "Markets" },
+  { href: "/#how", label: "How it works" },
+  { href: "/#security", label: "Security" },
+  { href: "/#faq", label: "FAQ" },
+  { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -22,7 +23,7 @@ export default function Nav() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Logo />
 
-        <nav className="hidden items-center gap-8 text-sm text-mist lg:flex">
+        <nav className="hidden items-center gap-5 text-sm text-mist lg:flex xl:gap-7">
           {links.map((l) => (
             <a key={l.href} href={l.href} className="hover:text-white">
               {l.label}
