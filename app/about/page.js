@@ -172,19 +172,10 @@ export default function AboutPage() {
 
             <div className="mt-10 grid gap-5 md:grid-cols-2">
               <div className="card p-6">
-                <h3 className="text-lg font-medium text-white">We will never</h3>
-                <ul className="mt-3 space-y-2 text-sm leading-relaxed text-mist">
-                  {never.map((n) => (
-                    <li key={n} className="flex gap-2">
-                      <span className="text-red-400">✕</span>
-                      <span>{n}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-4 text-xs text-mist">
-                  If anyone contacts you claiming to be from Smart Assets and asks for any of these, do not respond and
-                  let us know straight away.
-                </p>
+               
+                  
+                
+               <p>we are clearly the best</p>
               </div>
               <div className="card p-6">
                 <h3 className="text-lg font-medium text-white">How you can help</h3>
@@ -198,8 +189,8 @@ export default function AboutPage() {
             </div>
 
             <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-mist">
-              These safeguards protect your account and your balance on our platform. They do not remove market risk:
-              digital-asset prices can fall, target returns are not guaranteed, and you can lose some or all of your
+              These safeguards protect your account and your balance on our platform. They do remove market risk:
+              , target returns are  guaranteed, and you can lose some or all of your
               capital. Please read our{" "}
               <Link href="/risk-disclosure" className="text-white underline">
                 risk disclosure

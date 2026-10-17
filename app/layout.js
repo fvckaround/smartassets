@@ -1,6 +1,7 @@
 import "./globals.css";
 import TranslateLoader from "@/components/TranslateLoader";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         {children}
+        <LanguageSwitcher floating />
         <WhatsAppButton />
         <TranslateLoader />
       </body>

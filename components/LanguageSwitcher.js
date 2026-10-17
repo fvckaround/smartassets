@@ -27,7 +27,15 @@ function setTranslateCookie(code) {
   document.cookie = `googtrans=${value}; path=/; domain=${host}`;
 }
 
-export default function LanguageSwitcher({ className = "" }) {
+// The language picker now floats at the bottom-left of every page (rendered once in app/layout.js
+// with the "floating" prop). Older in-page usages (<LanguageSwitcher /> in the menu, login, register,
+// dashboard...) render nothing, so there is never a duplicate picker.
+export default function LanguageSwitcher({ floating = false }) {
+  if (!floating) return null;
+  return <FloatingPicker />;
+}
+
+function FloatingPicker() {
   const [lang, setLang] = useState("en");
 
   useEffect(() => {
@@ -59,11 +67,15 @@ export default function LanguageSwitcher({ className = "" }) {
   }
 
   return (
-    <label className={`notranslate inline-flex items-center gap-1.5 ${className}`} translate="no">
+    <label
+      className="notranslate fixed bottom-5 left-5 z-50 inline-flex items-center gap-1.5 rounded-full border border-line bg-panel/95 py-1.5 pl-3 pr-1.5 shadow-lg shadow-black/40 backdrop-blur"
+      translate="no"
+      title="Change language"
+    >
       <svg
         aria-hidden="true"
         viewBox="0 0 24 24"
-        className="h-4 w-4 shrink-0 text-mist"
+        className="h-5 w-5 shrink-0 text-gold"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.8"
@@ -78,7 +90,7 @@ export default function LanguageSwitcher({ className = "" }) {
         value={lang}
         onChange={onChange}
         translate="no"
-        className="notranslate max-w-[10rem] cursor-pointer rounded-lg border border-line bg-panel px-2 py-1.5 text-xs text-white outline-none focus:border-gold"
+        className="notranslate max-w-[8.5rem] cursor-pointer rounded-full border-0 bg-transparent py-1.5 pl-1 pr-2 text-sm text-white outline-none sm:max-w-[11rem]"
       >
         {LANGUAGES.map((l) => (
           <option key={l.code} value={l.code} className="bg-panel text-white">
