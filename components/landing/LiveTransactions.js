@@ -69,11 +69,19 @@ function formatAmount(amount) {
 }
 
 function TransactionRow({ transaction }) {
+  const initials = transaction.user
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .replace(".", "")
+    .slice(0, 2);
+
   return (
     <article className="transaction-row">
       <div className="transaction-user">
         <div className="transaction-avatar" aria-hidden="true">
-          {transaction.user.charAt(0)}
+          {initials}
         </div>
 
         <div className="transaction-user-details">
@@ -88,8 +96,12 @@ function TransactionRow({ transaction }) {
       </div>
 
       <div className="transaction-type">
-        <span className="transaction-type-dot" aria-hidden="true" />
-        {transaction.type}
+        <span
+          className={`transaction-type-dot transaction-dot-${transaction.type.toLowerCase()}`}
+          aria-hidden="true"
+        />
+
+        <span>{transaction.type}</span>
       </div>
 
       <div className="transaction-amount">
@@ -97,6 +109,7 @@ function TransactionRow({ transaction }) {
       </div>
 
       <div className="transaction-status">
+        <span className="transaction-status-dot" />
         Sample
       </div>
     </article>
@@ -104,8 +117,6 @@ function TransactionRow({ transaction }) {
 }
 
 export default function LiveTransactions() {
-  const scrollingTransactions = [...transactions, ...transactions];
-
   return (
     <section
       id="transaction-activity"
@@ -116,7 +127,7 @@ export default function LiveTransactions() {
         <div className="transaction-heading-area">
           <div className="transaction-eyebrow">
             <span className="transaction-live-dot" />
-            TRANSACTION ACTIVITY PREVIEW
+            TRANSACTION ACTIVITY
           </div>
 
           <h2 id="transaction-heading">
@@ -124,49 +135,29 @@ export default function LiveTransactions() {
           </h2>
 
           <p className="transaction-intro">
-            Explore examples of deposits, investments, withdrawals,
-            and other transaction activity on an investment platform.
+            Browse illustrative examples of investment activity,
+            including deposits, investments, withdrawals, and profits.
           </p>
-
-          <div className="transaction-summary">
-            <div className="summary-card">
-              <span className="summary-label">
-                Transaction Examples
-              </span>
-
-              <strong>100</strong>
-            </div>
-
-            <div className="summary-card">
-              <span className="summary-label">
-                Transaction Categories
-              </span>
-
-              <strong>04</strong>
-            </div>
-
-            <div className="summary-card">
-              <span className="summary-label">
-                Background
-              </span>
-
-              <strong>White & Green</strong>
-            </div>
-          </div>
         </div>
 
         <div className="transaction-panel">
           <div className="transaction-panel-header">
-            <div>
-              <h3>Transaction Activity</h3>
+            <div className="transaction-panel-title-group">
+              <div className="transaction-panel-icon" aria-hidden="true">
+                ↗
+              </div>
 
-              <p>
-                Example entries for demonstration purposes
-              </p>
+              <div>
+                <h3>Transaction Overview</h3>
+
+                <p>
+                  Browse the example entries below
+                </p>
+              </div>
             </div>
 
             <span className="transaction-count">
-              100 ENTRIES
+              100 EXAMPLES
             </span>
           </div>
 
@@ -179,12 +170,14 @@ export default function LiveTransactions() {
 
           <div
             className="transaction-scroll-window"
-            aria-label="Scrolling sample transaction list"
+            role="region"
+            aria-label="Sample transaction activity. Scroll inside this panel to see more entries."
+            tabIndex={0}
           >
-            <div className="transaction-scroll-track">
-              {scrollingTransactions.map((transaction, index) => (
+            <div className="transaction-scroll-list">
+              {transactions.map((transaction) => (
                 <TransactionRow
-                  key={`${transaction.id}-${index}`}
+                  key={transaction.id}
                   transaction={transaction}
                 />
               ))}
@@ -192,11 +185,16 @@ export default function LiveTransactions() {
           </div>
 
           <div className="transaction-panel-footer">
-            <span className="footer-indicator" />
+            <div className="transaction-footer-message">
+              <span className="footer-indicator" />
 
-            <span>
-              Demonstration data only. These are not verified live
-              customer transactions.
+              <span>
+                Demonstration data only — not verified live customer activity.
+              </span>
+            </div>
+
+            <span className="transaction-scroll-hint">
+              Scroll to explore ↓
             </span>
           </div>
         </div>
