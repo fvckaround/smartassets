@@ -30,7 +30,6 @@ export default function LandingContent({
 
       <TrustStrip />
 
-      {/* New white-and-green transaction activity section */}
       <LiveTransactions />
 
       <PlansSection plans={plans} />
