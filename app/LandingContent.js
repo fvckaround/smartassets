@@ -14,7 +14,7 @@ import FAQSection from "@/components/landing/FAQSection";
 import SupportCallout from "@/components/landing/SupportCallout";
 import Footer from "@/components/landing/Footer";
 
-export default function LandingContent({ plans, testimonials }) {
+export default function LandingContent({ plans, testimonials, testimonialsSample = false }) {
   return (
     <div className="min-h-screen">
       <Nav />
@@ -28,7 +28,7 @@ export default function LandingContent({ plans, testimonials }) {
       <HowItWorks />
       <AssetsSection />
       <SecuritySection />
-      <Testimonials items={testimonials} />
+      <Testimonials items={testimonials} sample={testimonialsSample} />
       <FAQSection />
       <SupportCallout />
       <Footer />

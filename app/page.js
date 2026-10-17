@@ -2,6 +2,7 @@ import dbConnect from "@/lib/db";
 import Plan from "@/models/Plan";
 import Testimonial from "@/models/Testimonial";
 import LandingContent from "./LandingContent";
+import { SAMPLE_TESTIMONIALS, SHOW_SAMPLES } from "@/lib/sampleTestimonials";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +41,11 @@ async function getData() {
 }
 
 export default async function HomePage() {
-  const { plans, testimonials } = await getData();
+  const data = await getData();
+  const { plans } = data;
+  // Until a real testimonial is published, show clearly labelled SAMPLE testimonials (while testing).
+  const sample = SHOW_SAMPLES && data.testimonials.length === 0;
+  const testimonials = sample ? SAMPLE_TESTIMONIALS : data.testimonials;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -54,7 +59,7 @@ export default async function HomePage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <LandingContent plans={plans} testimonials={testimonials} />
+      <LandingContent plans={plans} testimonials={testimonials} testimonialsSample={sample} />
     </>
   );
 }
