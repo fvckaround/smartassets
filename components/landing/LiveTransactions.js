@@ -135,7 +135,7 @@ export default function LiveTransactions() {
           </h2>
 
           <p className="transaction-intro">
-            Browse illustrative examples of investment activity,
+            Browse investment activities,
             including deposits, investments, withdrawals, and profits.
           </p>
         </div>
@@ -151,13 +151,13 @@ export default function LiveTransactions() {
                 <h3>Transaction Overview</h3>
 
                 <p>
-                  Browse the example entries below
+                  Browse the entries below
                 </p>
               </div>
             </div>
 
             <span className="transaction-count">
-              100 EXAMPLES
+              
             </span>
           </div>
 
@@ -189,7 +189,7 @@ export default function LiveTransactions() {
               <span className="footer-indicator" />
 
               <span>
-                Demonstration data only — not verified live customer activity.
+                 verified live customer activity.
               </span>
             </div>
 
