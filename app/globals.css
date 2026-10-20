@@ -9,19 +9,31 @@
   --color-gold-soft: #6ee7b7;
   --color-mist: #b6cfc3;
 
-  --font-display: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Inter", system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI",
+    sans-serif;
 }
+
+/* =========================================================
+   GLOBAL STYLES
+   ========================================================= */
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
   background: var(--color-ink);
   color: #e8f5ee;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 h1,
@@ -30,6 +42,10 @@ h3 {
   letter-spacing: -0.02em;
 }
 
+/* =========================================================
+   GRADIENT TEXT
+   ========================================================= */
+
 .gold-text {
   background: linear-gradient(
     120deg,
@@ -37,10 +53,15 @@ h3 {
     #1fd18a 50%,
     #0e9f6e 100%
   );
+
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
+
+/* =========================================================
+   CARDS
+   ========================================================= */
 
 .card {
   background: linear-gradient(
@@ -48,9 +69,14 @@ h3 {
     rgba(12, 36, 26, 0.95),
     rgba(7, 26, 18, 0.95)
   );
+
   border: 1px solid var(--color-line);
   border-radius: 16px;
 }
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
 
 .input {
   width: 100%;
@@ -60,12 +86,20 @@ h3 {
   padding: 12px 14px;
   color: #fff;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s ease;
 }
 
 .input:focus {
   border-color: var(--color-gold);
 }
+
+.input::placeholder {
+  color: #789888;
+}
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
 
 .btn-gold {
   background: linear-gradient(
@@ -74,15 +108,25 @@ h3 {
     #1fd18a 55%,
     #14b574
   );
+
   color: #04120c;
   font-weight: 600;
+  border: 0;
   border-radius: 10px;
   padding: 12px 20px;
-  transition: filter 0.15s, transform 0.15s;
+  cursor: pointer;
+
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
 }
 
 .btn-gold:hover {
   filter: brightness(1.08);
+}
+
+.btn-gold:active {
+  transform: scale(0.98);
 }
 
 .btn-gold:disabled {
@@ -90,12 +134,21 @@ h3 {
   cursor: not-allowed;
 }
 
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
 .btn-ghost {
   border: 1px solid var(--color-line);
   border-radius: 10px;
   padding: 10px 16px;
   color: #e8f5ee;
-  transition: border-color 0.15s, background 0.15s;
+  background: transparent;
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
 
 .btn-ghost:hover {
@@ -103,15 +156,22 @@ h3 {
   background: rgba(31, 209, 138, 0.08);
 }
 
+/* =========================================================
+   BACKGROUND GRID
+   ========================================================= */
+
 .bg-grid {
   background-image: radial-gradient(
     rgba(31, 209, 138, 0.1) 1px,
     transparent 1px
   );
+
   background-size: 28px 28px;
 }
 
-/* White band used to alternate with the dark green sections */
+/* =========================================================
+   LIGHT SECTIONS
+   ========================================================= */
 
 .band-light {
   background: #f4faf7;
@@ -119,11 +179,13 @@ h3 {
 }
 
 .band-light .card {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #d5e8de;
 }
 
-/* Mobile and tablet friendly tables */
+/* =========================================================
+   RESPONSIVE TABLES
+   ========================================================= */
 
 @media (max-width: 1279px) {
   table.stack,
@@ -191,8 +253,7 @@ h3 {
 }
 
 /* =========================================================
-   SMART ASSETS GLOBAL TRADE
-   COMPACT TRANSACTION ACTIVITY
+   TRANSACTION ACTIVITY SECTION
    ========================================================= */
 
 .transaction-section {
@@ -209,6 +270,10 @@ h3 {
   margin: 0 auto;
 }
 
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
 .transaction-heading-area {
   max-width: 700px;
   margin: 0 auto 30px;
@@ -220,12 +285,16 @@ h3 {
   align-items: center;
   justify-content: center;
   gap: 9px;
+
   margin-bottom: 15px;
   padding: 7px 12px;
+
   border: 1px solid rgba(31, 209, 138, 0.25);
   border-radius: 999px;
+
   background: rgba(31, 209, 138, 0.07);
   color: var(--color-gold-soft);
+
   font-size: 10px;
   font-weight: 750;
   letter-spacing: 0.12em;
@@ -235,14 +304,17 @@ h3 {
   width: 7px;
   height: 7px;
   flex: 0 0 7px;
+
   border-radius: 50%;
   background: var(--color-gold);
+
   box-shadow: 0 0 0 4px rgba(31, 209, 138, 0.1);
 }
 
 .transaction-heading-area h2 {
   margin: 0;
   color: #f0fff7;
+
   font-size: clamp(27px, 3.5vw, 40px);
   font-weight: 800;
   line-height: 1.2;
@@ -252,25 +324,39 @@ h3 {
 .transaction-intro {
   max-width: 590px;
   margin: 13px auto 0;
+
   color: var(--color-mist);
   font-size: 14px;
   line-height: 1.8;
 }
 
+/* =========================================================
+   TRANSACTION PANEL
+   ========================================================= */
+
 .transaction-panel {
   overflow: hidden;
+
   border: 1px solid rgba(110, 231, 183, 0.17);
   border-radius: 16px;
+
   background: var(--color-panel);
+
   box-shadow: 0 18px 55px rgba(0, 0, 0, 0.15);
 }
+
+/* =========================================================
+   PANEL HEADER
+   ========================================================= */
 
 .transaction-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+
   padding: 19px 22px;
+
   border-bottom: 1px solid var(--color-line);
   background: rgba(4, 18, 12, 0.28);
 }
@@ -286,11 +372,14 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 39px;
   height: 39px;
   flex: 0 0 39px;
+
   border: 1px solid rgba(31, 209, 138, 0.2);
   border-radius: 11px;
+
   background: rgba(31, 209, 138, 0.09);
   color: var(--color-gold-soft);
   font-size: 22px;
@@ -311,28 +400,64 @@ h3 {
   line-height: 1.6;
 }
 
+/* =========================================================
+   PAUSE / RESUME BUTTON
+   ========================================================= */
+
 .transaction-count {
   flex-shrink: 0;
+
   padding: 7px 10px;
+
   border: 1px solid rgba(31, 209, 138, 0.2);
   border-radius: 7px;
+
   background: rgba(31, 209, 138, 0.06);
   color: var(--color-gold-soft);
+
   font-size: 9px;
   font-weight: 750;
   letter-spacing: 0.07em;
 }
 
+.transaction-pause-button {
+  min-height: 34px;
+  cursor: pointer;
+  font-family: inherit;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.transaction-pause-button:hover {
+  border-color: rgba(110, 231, 183, 0.5);
+  background: rgba(31, 209, 138, 0.15);
+}
+
+.transaction-pause-button:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   TABLE HEADINGS
+   ========================================================= */
+
 .transaction-table-heading {
   display: grid;
+
   grid-template-columns:
     minmax(0, 1.5fr)
     minmax(105px, 0.85fr)
     minmax(105px, 0.85fr)
     90px;
+
   align-items: center;
   gap: 14px;
+
   padding: 12px 22px;
+
   border-bottom: 1px solid var(--color-line);
   background: rgba(4, 18, 12, 0.2);
 }
@@ -348,16 +473,22 @@ h3 {
   text-align: right;
 }
 
-/* Fixed-height list with internal scrolling */
+/* =========================================================
+   AUTOMATIC INTERNAL SCROLLING
+   ========================================================= */
 
 .transaction-scroll-window {
   height: 310px;
+
   overflow-x: hidden;
   overflow-y: auto;
+
   overscroll-behavior: contain;
+
   scrollbar-width: thin;
   scrollbar-color: #237b55 #0a2117;
-  scroll-behavior: smooth;
+
+  scroll-behavior: auto;
 }
 
 .transaction-scroll-window::-webkit-scrollbar {
@@ -387,19 +518,28 @@ h3 {
   width: 100%;
 }
 
+/* =========================================================
+   TRANSACTION ROWS
+   ========================================================= */
+
 .transaction-row {
   display: grid;
+
   grid-template-columns:
     minmax(0, 1.5fr)
     minmax(105px, 0.85fr)
     minmax(105px, 0.85fr)
     90px;
+
   align-items: center;
   gap: 14px;
+
   min-height: 62px;
   padding: 10px 22px;
+
   border-bottom: 1px solid rgba(23, 56, 42, 0.7);
   background: transparent;
+
   transition: background 0.18s ease;
 }
 
@@ -410,6 +550,10 @@ h3 {
 .transaction-row:hover {
   background: rgba(31, 209, 138, 0.045);
 }
+
+/* =========================================================
+   USER DETAILS
+   ========================================================= */
 
 .transaction-user {
   display: flex;
@@ -422,13 +566,17 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 34px;
   height: 34px;
   flex: 0 0 34px;
+
   border: 1px solid rgba(110, 231, 183, 0.18);
   border-radius: 10px;
+
   background: rgba(31, 209, 138, 0.09);
   color: var(--color-gold-soft);
+
   font-size: 10px;
   font-weight: 800;
 }
@@ -436,8 +584,8 @@ h3 {
 .transaction-user-details {
   display: flex;
   flex-direction: column;
-  min-width: 0;
   gap: 3px;
+  min-width: 0;
 }
 
 .transaction-name {
@@ -459,11 +607,16 @@ h3 {
   white-space: nowrap;
 }
 
+/* =========================================================
+   TRANSACTION TYPES
+   ========================================================= */
+
 .transaction-type {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
+
   color: #c2ddcf;
   font-size: 11px;
   font-weight: 550;
@@ -493,6 +646,10 @@ h3 {
   background: #86efac;
 }
 
+/* =========================================================
+   TRANSACTION AMOUNTS
+   ========================================================= */
+
 .transaction-amount {
   color: var(--color-gold-soft);
   font-size: 12px;
@@ -500,19 +657,29 @@ h3 {
   white-space: nowrap;
 }
 
+/* =========================================================
+   TRANSACTION STATUS BASE STYLE
+   ========================================================= */
+
 .transaction-status {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+
   justify-self: end;
+
   padding: 6px 8px;
+
   border: 1px solid rgba(110, 231, 183, 0.16);
   border-radius: 7px;
+
   background: rgba(31, 209, 138, 0.06);
   color: #8de8bc;
+
   font-size: 9px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .transaction-status-dot {
@@ -520,15 +687,51 @@ h3 {
   height: 5px;
   flex: 0 0 5px;
   border-radius: 50%;
-  background: #6ee7b7;
+  background: currentColor;
 }
+
+/* =========================================================
+   CONFIRMED STATUS
+   ========================================================= */
+
+.transaction-status-confirmed {
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(110, 231, 183, 0.25);
+}
+
+/* =========================================================
+   PENDING STATUS
+   ========================================================= */
+
+.transaction-status-pending {
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(252, 211, 77, 0.25);
+}
+
+/* =========================================================
+   COMPLETED STATUS
+   ========================================================= */
+
+.transaction-status-completed {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(147, 197, 253, 0.25);
+}
+
+/* =========================================================
+   PANEL FOOTER
+   ========================================================= */
 
 .transaction-panel-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+
   padding: 13px 22px;
+
   border-top: 1px solid var(--color-line);
   background: rgba(4, 18, 12, 0.25);
 }
@@ -537,6 +740,7 @@ h3 {
   display: flex;
   align-items: flex-start;
   gap: 8px;
+
   color: #88a999;
   font-size: 10px;
   line-height: 1.6;
@@ -546,7 +750,9 @@ h3 {
   width: 6px;
   height: 6px;
   flex: 0 0 6px;
+
   margin-top: 4px;
+
   border-radius: 50%;
   background: var(--color-gold);
 }
@@ -558,7 +764,9 @@ h3 {
   font-weight: 650;
 }
 
-/* Tablet */
+/* =========================================================
+   TABLET RESPONSIVENESS
+   ========================================================= */
 
 @media (max-width: 760px) {
   .transaction-section {
@@ -579,6 +787,7 @@ h3 {
       minmax(80px, 0.8fr)
       minmax(90px, 0.8fr)
       70px;
+
     gap: 9px;
     padding: 12px 14px;
   }
@@ -589,6 +798,7 @@ h3 {
       minmax(80px, 0.8fr)
       minmax(90px, 0.8fr)
       70px;
+
     gap: 9px;
     padding: 10px 14px;
   }
@@ -623,7 +833,9 @@ h3 {
   }
 }
 
-/* Small phones */
+/* =========================================================
+   SMALL PHONE RESPONSIVENESS
+   ========================================================= */
 
 @media (max-width: 480px) {
   .transaction-section {
@@ -647,6 +859,10 @@ h3 {
     gap: 10px;
   }
 
+  .transaction-panel-title-group {
+    gap: 8px;
+  }
+
   .transaction-panel-icon {
     width: 33px;
     height: 33px;
@@ -667,11 +883,17 @@ h3 {
     font-size: 8px;
   }
 
+  .transaction-pause-button {
+    min-height: 32px;
+    white-space: nowrap;
+  }
+
   .transaction-table-heading {
     grid-template-columns:
       minmax(0, 1.2fr)
       minmax(65px, 0.75fr)
       minmax(76px, 0.8fr);
+
     gap: 7px;
     padding: 11px 10px;
   }
@@ -690,6 +912,7 @@ h3 {
       minmax(0, 1.2fr)
       minmax(65px, 0.75fr)
       minmax(76px, 0.8fr);
+
     gap: 7px;
     min-height: 62px;
     padding: 9px 10px;
@@ -733,6 +956,7 @@ h3 {
   .transaction-status {
     grid-column: 2 / 4;
     justify-self: start;
+
     margin-top: -4px;
     padding: 4px 6px;
   }
@@ -752,7 +976,9 @@ h3 {
   }
 }
 
-/* Respect reduced-motion preferences */
+/* =========================================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -763,7 +989,8 @@ h3 {
     scroll-behavior: auto;
   }
 
-  .transaction-row {
+  .transaction-row,
+  .transaction-pause-button {
     transition: none;
   }
 }

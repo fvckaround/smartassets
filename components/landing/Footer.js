@@ -59,10 +59,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <p className="mt-10 border-t border-line pt-6 text-xs leading-relaxed text-mist">
-          Risk warning: digital assets are volatile and you can lose some or all of the money you invest. Target
-          returns are not guaranteed. This site does not provide financial, legal or tax advice.
-        </p>
+        
         <p className="mt-3 text-xs text-mist">
           © {new Date().getFullYear()} Smart Assets Global Trade. All rights reserved.
         </p>
