@@ -10,6 +10,7 @@ const links = [
   { href: "/dashboard/invest", label: "Invest" },
   { href: "/dashboard/withdraw", label: "Withdraw" },
   { href: "/dashboard/referrals", label: "Referrals" },
+  { href: "/dashboard/settings", label: "Settings" },
 ];
 
 export default async function DashboardLayout({ children }) {
