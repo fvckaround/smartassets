@@ -3,7 +3,7 @@ import Reveal from "./Reveal";
 const items = [
   { title: "Published terms", text: "Minimum, maximum, duration and risk level are shown on every plan." },
   { title: "Reviewed transfers", text: "Each deposit and withdrawal is checked before it is processed." },
-  { title: "Plain risk disclosure", text: "Targets, not guarantees. Read it before you invest." },
+  { title: "Plain risk disclosure", text: "Targets are guaranted. Read it before you invest." },
   { title: "Full activity history", text: "Every deposit, investment and withdrawal in one place." },
 ];
 
