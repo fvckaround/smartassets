@@ -2,28 +2,42 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const users = [
-  "Alex M.",
-  "Sarah K.",
-  "Michael T.",
-  "David R.",
-  "Jennifer L.",
-  "Daniel W.",
-  "Olivia B.",
-  "James P.",
-  "Sophia A.",
-  "William C.",
-  "Emma D.",
-  "Benjamin H.",
-  "Grace N.",
-  "Samuel O.",
-  "Victoria E.",
-  "Joseph I.",
-  "Amelia G.",
-  "Daniel F.",
-  "Charlotte U.",
-  "Matthew Z.",
-];
+// Seeded random generator so addresses are the same on the server
+// and in the browser (prevents Next.js hydration mismatch errors).
+function seededRandom(seed) {
+  let t = seed + 0x6d2b79f5;
+
+  return () => {
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    t = (t + Math.imul(t ^ (t >>> 14), t | 1)) ^ (t >>> 14);
+    t = (t + 0x6d2b79f5) | 0;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Builds a 42-character wallet address: "0x" + 40 hex characters
+function generateWalletAddress(seed) {
+  const random = seededRandom(seed * 7919);
+  const hex = "0123456789abcdef";
+  let address = "0x";
+
+  for (let i = 0; i < 40; i++) {
+    let char = hex[Math.floor(random() * 16)];
+
+    // Mixed upper/lower case, like real checksummed addresses
+    if (random() > 0.5) char = char.toUpperCase();
+
+    address += char;
+  }
+
+  return address;
+}
+
+// Shortens 0x7a3F9c...4B21 style. Change the numbers to show more/less.
+function shortenAddress(address, start = 6, end = 4) {
+  return `${address.slice(0, start + 2)}…${address.slice(-end)}`;
+}
 
 const transactionTypes = [
   {
@@ -55,7 +69,7 @@ const transactions = Array.from({ length: 100 }, (_, index) => {
 
   return {
     id: index + 1,
-    user: users[index % users.length],
+    wallet: generateWalletAddress(index + 1),
     type: transaction.type,
     description: transaction.description,
     amount:
@@ -70,22 +84,15 @@ const transactions = Array.from({ length: 100 }, (_, index) => {
 // Duplicated list for seamless looping (built once, not on every render)
 const scrollingTransactions = [...transactions, ...transactions];
 
+// Automatic scrolling speed in pixels per second. Raise for faster.
+const SCROLL_SPEED = 70;
+
 function formatAmount(amount) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 2,
   }).format(amount);
-}
-
-function getInitials(name) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .map((part) => part.replace(".", "").charAt(0))
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
 }
 
 function TransactionRow({ transaction }) {
@@ -96,11 +103,17 @@ function TransactionRow({ transaction }) {
     <article className="transaction-row">
       <div className="transaction-user">
         <div className="transaction-avatar" aria-hidden="true">
-          {getInitials(transaction.user)}
+          {transaction.wallet.slice(2, 4).toUpperCase()}
         </div>
 
         <div className="transaction-user-details">
-          <span className="transaction-name">{transaction.user}</span>
+          <span
+            className="transaction-name"
+            title={transaction.wallet}
+            style={{ fontFamily: "monospace", letterSpacing: "0.02em" }}
+          >
+            {shortenAddress(transaction.wallet)}
+          </span>
 
           <span className="transaction-description">
             {transaction.description}
@@ -130,7 +143,7 @@ function TransactionRow({ transaction }) {
 }
 
 export default function LiveTransactions() {
-  const scrollRef = useRef(null);
+  const listRef = useRef(null);
 
   // Pause toggled by the button
   const [paused, setPaused] = useState(false);
@@ -138,7 +151,9 @@ export default function LiveTransactions() {
   // Temporary pause while the user hovers or touches the list
   const [interacting, setInteracting] = useState(false);
 
-  // Lets the animation loop read the latest pause state without restarting
+  // When reduced motion is on, skip the animation and allow manual scrolling
+  const [reducedMotion, setReducedMotion] = useState(false);
+
   const pausedRef = useRef(false);
   const resumeTimeoutRef = useRef(null);
 
@@ -149,26 +164,20 @@ export default function LiveTransactions() {
   }, [isPaused]);
 
   useEffect(() => {
-    const container = scrollRef.current;
+    const list = listRef.current;
 
-    if (!container) return;
+    if (!list) return;
 
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    );
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    if (reducedMotion.matches) return;
+    if (motionQuery.matches) {
+      setReducedMotion(true);
+      return;
+    }
 
     let animationFrame;
     let previousTime = 0;
-
-    // Track the exact (fractional) position ourselves. Mobile browsers
-    // round scrollTop to whole pixels, so small per-frame increments
-    // would otherwise be lost and the list would never move.
-    let position = container.scrollTop;
-
-    // Automatic scrolling speed in pixels per second.
-    const scrollSpeed = 22;
+    let position = 0;
 
     const animate = (time) => {
       if (previousTime === 0) {
@@ -179,20 +188,18 @@ export default function LiveTransactions() {
 
       previousTime = time;
 
-      if (pausedRef.current) {
-        // Stay in sync with any manual scrolling done while paused
-        position = container.scrollTop;
-      } else {
-        const halfwayPoint = container.scrollHeight / 2;
+      if (!pausedRef.current) {
+        const halfwayPoint = list.scrollHeight / 2;
 
-        position += scrollSpeed * elapsed;
+        position += SCROLL_SPEED * elapsed;
 
         // Loop through the duplicated list seamlessly.
         if (halfwayPoint > 0 && position >= halfwayPoint) {
           position -= halfwayPoint;
         }
 
-        container.scrollTop = position;
+        // Transform allows sub-pixel, GPU-smooth movement on phones
+        list.style.transform = `translate3d(0, ${-position}px, 0)`;
       }
 
       animationFrame = requestAnimationFrame(animate);
@@ -217,10 +224,9 @@ export default function LiveTransactions() {
   const handleTouchEnd = () => {
     clearTimeout(resumeTimeoutRef.current);
 
-    // Give momentum scrolling time to settle before resuming
     resumeTimeoutRef.current = setTimeout(() => {
       setInteracting(false);
-    }, 1500);
+    }, 1000);
   };
 
   return (
@@ -274,18 +280,18 @@ export default function LiveTransactions() {
           </div>
 
           <div className="transaction-table-heading">
-            <span>USER</span>
+            <span>WALLET</span>
             <span>TYPE</span>
             <span>AMOUNT</span>
             <span>STATUS</span>
           </div>
 
           <div
-            ref={scrollRef}
             className="transaction-scroll-window"
             role="region"
             aria-label="Sample transaction entries"
             tabIndex={0}
+            style={{ overflowY: reducedMotion ? "auto" : "hidden" }}
             onPointerEnter={(e) => {
               if (e.pointerType === "mouse") setInteracting(true);
             }}
@@ -296,7 +302,11 @@ export default function LiveTransactions() {
             onTouchEnd={handleTouchEnd}
             onTouchCancel={handleTouchEnd}
           >
-            <div className="transaction-scroll-list">
+            <div
+              ref={listRef}
+              className="transaction-scroll-list"
+              style={{ willChange: "transform" }}
+            >
               {scrollingTransactions.map((transaction, index) => (
                 <TransactionRow
                   key={`${transaction.id}-${index}`}
@@ -310,10 +320,6 @@ export default function LiveTransactions() {
             <div className="transaction-footer-message">
               <span className="footer-indicator" aria-hidden="true" />
             </div>
-
-            <span className="transaction-scroll-hint">
-              {isPaused ? "Scrolling paused" : "Auto-scroll enabled"}
-            </span>
           </div>
         </div>
       </div>
