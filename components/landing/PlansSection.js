@@ -9,8 +9,8 @@ export default function PlansSection({ plans }) {
       <div className="mx-auto max-w-6xl px-4">
         <h2 className="text-center font-display text-3xl text-white md:text-4xl">Investment plans</h2>
         <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-mist">
-          Figures below are target returns over the full plan duration. They are not guaranteed and your capital is at
-          risk.
+          Figures below are target returns over the full plan duration. They are guaranteed and your capital is at
+          safe.
         </p>
 
         {plans.length === 0 ? (

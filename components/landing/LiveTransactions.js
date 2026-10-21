@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Seeded random generator so addresses are the same on the server
+// Seeded random generator so values are the same on the server
 // and in the browser (prevents Next.js hydration mismatch errors).
 function seededRandom(seed) {
   let t = seed + 0x6d2b79f5;
@@ -44,39 +44,49 @@ const transactionTypes = [
     type: "Investment",
     description: "",
     amounts: [250, 500, 750, 1200, 2500, 5000, 350, 1800],
+    largeAmounts: [100000, 150000, 250000, 375000, 500000, 750000, 1000000, 1250000],
   },
   {
     type: "Deposit",
     description: "",
     amounts: [100, 250, 500, 750, 1000, 1500, 2000, 350],
+    largeAmounts: [100000, 120000, 200000, 300000, 450000, 600000, 850000],
   },
   {
     type: "Withdrawal",
     description: "",
     amounts: [100, 200, 350, 500, 850, 1200, 1500, 400],
+    largeAmounts: [100000, 135000, 180000, 250000, 320000, 500000],
   },
   {
     type: "Profit",
     description: "",
     amounts: [15, 35, 50, 75, 100, 150, 200, 45],
+    largeAmounts: [100000, 112500, 140000, 165000, 210000, 275000],
   },
 ];
 
 const statuses = ["Confirmed", "Pending", "Completed"];
 
-const transactions = Array.from({ length: 100 }, (_, index) => {
+// Roughly 1 in 5 transactions gets a large amount. Raise for more big ones.
+const LARGE_TRANSACTION_CHANCE = 0.2;
+
+const TRANSACTION_COUNT = 150;
+
+const transactions = Array.from({ length: TRANSACTION_COUNT }, (_, index) => {
   const transaction = transactionTypes[index % transactionTypes.length];
+  const random = seededRandom(index * 31 + 5);
+  const isLarge = random() < LARGE_TRANSACTION_CHANCE;
+
+  const amountList = isLarge ? transaction.largeAmounts : transaction.amounts;
+  const amount = amountList[Math.floor(random() * amountList.length)];
 
   return {
     id: index + 1,
     wallet: generateWalletAddress(index + 1),
     type: transaction.type,
     description: transaction.description,
-    amount:
-      transaction.amounts[
-        Math.floor(index / transactionTypes.length) %
-          transaction.amounts.length
-      ],
+    amount,
     status: statuses[index % statuses.length],
   };
 });
