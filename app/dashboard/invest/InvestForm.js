@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PlanCard from "@/components/PlanCard";
 
 const fmt = (n) => Number(n).toLocaleString("en-US");
 
@@ -42,32 +43,26 @@ export default function InvestForm({ plans, balance }) {
 
   return (
     <div className="mt-8 grid gap-6 lg:grid-cols-5">
-      <div className="space-y-3 lg:col-span-3">
+      <div className="grid gap-5 sm:grid-cols-2 lg:col-span-3">
         {plans.map((p) => (
-          <button
-            type="button"
+          <PlanCard
             key={p.id}
-            onClick={() => setPlanId(p.id)}
-            className={`card w-full p-5 text-left transition ${
-              p.id === planId ? "!border-gold" : "hover:border-gold/50"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-semibold text-white">{p.name}</span>
-              <span className="text-xs text-gold">{p.riskLevel} risk</span>
-            </div>
-            <p className="mt-1 text-sm text-mist">{p.description}</p>
-            <p className="mt-3 text-sm text-white">
-              {p.targetReturnPercent}% target over {p.durationDays} days
-              <span className="ml-3 text-mist">
-                ${fmt(p.minAmount)} - {p.maxAmount == null ? "Unlimited" : `$${fmt(p.maxAmount)}`}
-              </span>
-            </p>
-          </button>
+            plan={p}
+            selected={p.id === planId}
+            action={
+              <button
+                type="button"
+                onClick={() => setPlanId(p.id)}
+                className={p.id === planId ? "btn-ghost px-8" : "btn-gold px-8"}
+              >
+                {p.id === planId ? "Selected" : "Select Plan"}
+              </button>
+            }
+          />
         ))}
       </div>
 
-      <form onSubmit={onSubmit} className="card h-fit space-y-4 p-6 lg:col-span-2">
+      <form onSubmit={onSubmit} className="card h-fit space-y-4 p-6 lg:sticky lg:top-6 lg:col-span-2">
         <h2 className="text-xl font-semibold text-white">{plan.name}</h2>
         <div>
           <label className="mb-1.5 block text-sm text-mist">Amount (USD)</label>
