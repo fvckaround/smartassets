@@ -28,9 +28,14 @@ export async function POST(req) {
     const plan = await Plan.findOne({ _id: planId, active: true }).lean();
     if (!plan) return NextResponse.json({ error: "Plan not available." }, { status: 404 });
 
-    if (!Number.isFinite(amount) || amount < plan.minAmount || amount > plan.maxAmount) {
+    if (!Number.isFinite(amount) || amount < plan.minAmount || (plan.maxAmount != null && amount > plan.maxAmount)) {
       return NextResponse.json(
-        { error: `Amount must be between $${plan.minAmount} and $${plan.maxAmount} for this plan.` },
+        {
+          error:
+            plan.maxAmount != null
+              ? `Amount must be between $${plan.minAmount} and $${plan.maxAmount} for this plan.`
+              : `Minimum amount for this plan is $${plan.minAmount}.`,
+        },
         { status: 400 }
       );
     }

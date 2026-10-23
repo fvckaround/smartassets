@@ -28,18 +28,18 @@ export async function PATCH(req, { params }) {
         name: String(b.name || "").trim(),
         description: String(b.description || "").trim(),
         minAmount: Number(b.minAmount),
-        maxAmount: Number(b.maxAmount),
+        maxAmount: b.unlimitedMax === true ? null : Number(b.maxAmount),
         targetReturnPercent: Number(b.targetReturnPercent),
         durationDays: Number(b.durationDays),
         riskLevel: ["Low", "Medium", "High"].includes(b.riskLevel) ? b.riskLevel : "Medium",
       };
       if (!plan.name) return NextResponse.json({ error: "Name is required." }, { status: 400 });
-      for (const k of ["minAmount", "maxAmount", "targetReturnPercent", "durationDays"]) {
+      for (const k of ["minAmount", "targetReturnPercent", "durationDays", ...(plan.maxAmount === null ? [] : ["maxAmount"])]) {
         if (!Number.isFinite(plan[k]) || plan[k] < 0) {
           return NextResponse.json({ error: `Invalid ${k}.` }, { status: 400 });
         }
       }
-      if (plan.minAmount < 1 || plan.maxAmount < plan.minAmount || plan.durationDays < 1) {
+      if (plan.minAmount < 1 || (plan.maxAmount !== null && plan.maxAmount < plan.minAmount) || plan.durationDays < 1) {
         return NextResponse.json({ error: "Check min, max and duration values." }, { status: 400 });
       }
       Object.assign(update, plan);

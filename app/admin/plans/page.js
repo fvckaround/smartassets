@@ -41,7 +41,7 @@ export default async function AdminPlansPage() {
                     {p.name}
                   </td>
                   <td data-label="Range" className="full p-4">
-                    {money(p.minAmount)} - {money(p.maxAmount)}
+                    {money(p.minAmount)} - {p.maxAmount == null ? "Unlimited" : money(p.maxAmount)}
                   </td>
                   <td data-label="Target" className="p-4">
                     {p.targetReturnPercent}%

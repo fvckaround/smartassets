@@ -7,7 +7,8 @@ const PlanSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     description: { type: String, default: "" },
     minAmount: { type: Number, required: true, min: 1 },
-    maxAmount: { type: Number, required: true, min: 1 },
+    // null = no maximum (unlimited)
+    maxAmount: { type: Number, min: 1, default: null },
     // Target return over the whole duration, in percent. This is a target, not a guarantee.
     targetReturnPercent: { type: Number, required: true, min: 0 },
     durationDays: { type: Number, required: true, min: 1 },

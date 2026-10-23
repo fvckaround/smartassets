@@ -60,7 +60,7 @@ export default function InvestForm({ plans, balance }) {
             <p className="mt-3 text-sm text-white">
               {p.targetReturnPercent}% target over {p.durationDays} days
               <span className="ml-3 text-mist">
-                ${fmt(p.minAmount)} - ${fmt(p.maxAmount)}
+                ${fmt(p.minAmount)} - {p.maxAmount == null ? "Unlimited" : `$${fmt(p.maxAmount)}`}
               </span>
             </p>
           </button>
@@ -76,11 +76,15 @@ export default function InvestForm({ plans, balance }) {
             step="any"
             required
             min={plan.minAmount}
-            max={plan.maxAmount}
+            max={plan.maxAmount ?? undefined}
             className="input"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder={`$${fmt(plan.minAmount)} - $${fmt(plan.maxAmount)}`}
+            placeholder={
+              plan.maxAmount == null
+                ? `$${fmt(plan.minAmount)} or more`
+                : `$${fmt(plan.minAmount)} - $${fmt(plan.maxAmount)}`
+            }
           />
           <p className="mt-1.5 text-xs text-mist">Balance: ${fmt(balance)}</p>
         </div>

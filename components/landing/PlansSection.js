@@ -44,7 +44,7 @@ export default function PlansSection({ plans }) {
                     </div>
                     <div className="flex justify-between">
                       <dt className="text-mist">Maximum</dt>
-                      <dd className="text-white">${fmt(p.maxAmount)}</dd>
+                      <dd className="text-white">{p.maxAmount == null ? "Unlimited" : `$${fmt(p.maxAmount)}`}</dd>
                     </div>
                     <div className="flex justify-between">
                       <dt className="text-mist">Duration</dt>

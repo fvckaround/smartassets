@@ -132,6 +132,7 @@ export function PlanForm() {
     description: "",
     minAmount: "",
     maxAmount: "",
+    unlimitedMax: false,
     targetReturnPercent: "",
     durationDays: "",
     riskLevel: "Medium",
@@ -140,7 +141,8 @@ export function PlanForm() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  const set = (k) => (e) => setV((s) => ({ ...s, [k]: e.target.value }));
+  const set = (k) => (e) =>
+    setV((s) => ({ ...s, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
 
   async function submit(e) {
     e.preventDefault();
@@ -175,7 +177,20 @@ export function PlanForm() {
       </div>
       <div>
         <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Maximum (USD)</label>
-        <input type="number" step="any" className="input" required value={v.maxAmount} onChange={set("maxAmount")} />
+        <input
+          type="number"
+          step="any"
+          className="input disabled:opacity-40"
+          required={!v.unlimitedMax}
+          disabled={v.unlimitedMax}
+          placeholder={v.unlimitedMax ? "Unlimited" : ""}
+          value={v.unlimitedMax ? "" : v.maxAmount}
+          onChange={set("maxAmount")}
+        />
+        <label className="mt-2 flex items-center gap-2 text-xs text-[var(--color-mist)]">
+          <input type="checkbox" checked={v.unlimitedMax} onChange={set("unlimitedMax")} />
+          Unlimited (no maximum)
+        </label>
       </div>
       <div>
         <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Target return (%)</label>
@@ -323,14 +338,16 @@ export function PlanActions({ plan }) {
     name: plan.name,
     description: plan.description || "",
     minAmount: String(plan.minAmount),
-    maxAmount: String(plan.maxAmount),
+    maxAmount: plan.maxAmount == null ? "" : String(plan.maxAmount),
+    unlimitedMax: plan.maxAmount == null,
     targetReturnPercent: String(plan.targetReturnPercent),
     durationDays: String(plan.durationDays),
     riskLevel: plan.riskLevel,
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const set = (k) => (e) => setV((s) => ({ ...s, [k]: e.target.value }));
+  const set = (k) => (e) =>
+    setV((s) => ({ ...s, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
 
   async function submit(e) {
     e.preventDefault();
@@ -375,7 +392,20 @@ export function PlanActions({ plan }) {
             </div>
             <div>
               <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Maximum (USD)</label>
-              <input type="number" step="any" className="input" required value={v.maxAmount} onChange={set("maxAmount")} />
+              <input
+                type="number"
+                step="any"
+                className="input disabled:opacity-40"
+                required={!v.unlimitedMax}
+                disabled={v.unlimitedMax}
+                placeholder={v.unlimitedMax ? "Unlimited" : ""}
+                value={v.unlimitedMax ? "" : v.maxAmount}
+                onChange={set("maxAmount")}
+              />
+              <label className="mt-2 flex items-center gap-2 text-xs text-[var(--color-mist)]">
+                <input type="checkbox" checked={v.unlimitedMax} onChange={set("unlimitedMax")} />
+                Unlimited (no maximum)
+              </label>
             </div>
             <div>
               <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Target return (%)</label>
