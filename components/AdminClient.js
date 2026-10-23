@@ -161,7 +161,13 @@ export function PlanForm() {
       </div>
       <div className="sm:col-span-2">
         <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Description</label>
-        <input className="input" value={v.description} onChange={set("description")} />
+        <textarea
+                className="input min-h-[110px]"
+                maxLength={1000}
+                placeholder="Describe what this plan is about, who it suits and how it works."
+                value={v.description}
+                onChange={set("description")}
+              />
       </div>
       <div>
         <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Minimum (USD)</label>
@@ -355,7 +361,13 @@ export function PlanActions({ plan }) {
             </div>
             <div className="sm:col-span-2">
               <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Description</label>
-              <input className="input" value={v.description} onChange={set("description")} />
+              <textarea
+                className="input min-h-[110px]"
+                maxLength={1000}
+                placeholder="Describe what this plan is about, who it suits and how it works."
+                value={v.description}
+                onChange={set("description")}
+              />
             </div>
             <div>
               <label className="mb-1.5 block text-sm text-[var(--color-mist)]">Minimum (USD)</label>

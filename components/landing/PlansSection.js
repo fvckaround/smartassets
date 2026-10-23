@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Reveal from "./Reveal";
+import { REFERRAL_PERCENT } from "@/lib/referral";
 
 const fmt = (n) => Number(n).toLocaleString("en-US");
 
@@ -29,7 +30,7 @@ export default function PlansSection({ plans }) {
                     </span>
                   </div>
 
-                  <p className="mt-2 min-h-[40px] text-sm text-mist">{p.description}</p>
+                  <p className="mt-2 min-h-[40px] whitespace-pre-line text-sm leading-relaxed text-mist">{p.description}</p>
 
                   <div className="mt-5 flex items-baseline gap-2">
                     <span className="gold-text font-display text-4xl">{p.targetReturnPercent}%</span>
@@ -48,6 +49,10 @@ export default function PlansSection({ plans }) {
                     <div className="flex justify-between">
                       <dt className="text-mist">Duration</dt>
                       <dd className="text-white">{p.durationDays} days</dd>
+                    </div>
+                    <div className="flex justify-between">
+                      <dt className="text-mist">Referral bonus</dt>
+                      <dd className="text-gold">{REFERRAL_PERCENT}% of referred deposits</dd>
                     </div>
                   </dl>
 

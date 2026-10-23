@@ -8,7 +8,9 @@ const links = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/wallets", label: "Wallets" },
   { href: "/admin/plans", label: "Plans" },
+  { href: "/admin/packages", label: "Packages" },
   { href: "/admin/investments", label: "Investments" },
+  { href: "/admin/loans", label: "Loans" },
   { href: "/admin/users", label: "Users" },
   { href: "/dashboard", label: "My dashboard" },
 ];

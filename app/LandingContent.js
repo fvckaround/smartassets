@@ -4,6 +4,7 @@ import MarketTicker from "@/components/landing/MarketTicker";
 import TrustStrip from "@/components/landing/TrustStrip";
 import LiveTransactions from "@/components/landing/LiveTransactions";
 import PlansSection from "@/components/landing/PlansSection";
+import PackagesSection from "@/components/landing/PackagesSection";
 import MarketsSection from "@/components/landing/MarketsSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import ProductPreview from "@/components/landing/ProductPreview";
@@ -17,6 +18,7 @@ import Footer from "@/components/landing/Footer";
 
 export default function LandingContent({
   plans,
+  packages = [],
   testimonials,
   testimonialsSample = false,
 }) {
@@ -33,6 +35,8 @@ export default function LandingContent({
       <LiveTransactions />
 
       <PlansSection plans={plans} />
+
+      <PackagesSection packages={packages} />
 
       <MarketsSection />
 
