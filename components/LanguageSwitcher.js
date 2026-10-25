@@ -68,7 +68,7 @@ function FloatingPicker() {
 
   return (
     <label
-      className="notranslate fixed bottom-5 left-5 z-50 inline-flex items-center gap-1.5 rounded-full border border-line bg-panel/95 py-1.5 pl-3 pr-1.5 shadow-lg shadow-black/40 backdrop-blur"
+      className="notranslate fixed bottom-24 left-5 z-50 inline-flex items-center gap-1.5 rounded-full border border-line bg-panel/95 py-1.5 pl-3 pr-1.5 shadow-lg shadow-black/40 backdrop-blur"
       translate="no"
       title="Change language"
     >
